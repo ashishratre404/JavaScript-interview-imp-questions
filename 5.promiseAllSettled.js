@@ -1,0 +1,37 @@
+const allSettled = (promises) => {
+  // map the promises to return a custom response.
+  const mappedPromises = promises.map((p) =>
+    p.then(
+      (val) => ({ status: "fulfilled", value: val })
+    )
+    .catch((err)=>({ status: "rejected", reason: err }))
+  );
+  // run all the promises once with .all
+  return Promise.all(mappedPromises);
+};
+
+const a = new Promise((resolve) =>
+  setTimeout(() => {
+    resolve(3);
+  }, 200)
+);
+const b = new Promise((resolve, reject) => reject(9));
+const c = new Promise((resolve) => resolve(5));
+allSettled([a, b, c]).then((val) => {
+  console.log(val);
+});
+// Output:
+// [
+// {
+// "status": "fulfilled",
+// "value": 3
+// },
+// {
+// "status": "rejected",
+// "reason": 9
+// },
+// {
+// "status": "fulfilled",
+// "value": 5
+// }
+// ]
